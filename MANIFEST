@@ -2,3 +2,4 @@ README
 MANIFEST
 Build.PL
 lib/Starlink/ATL/Region.pm
+t/region-merge.t
