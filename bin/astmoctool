@@ -1,8 +1,57 @@
 #!/usr/bin/env perl
 
+=head1 NAME
+
+astmoctool - Utility for manipulating MOC files using AST
+
+=head1 USAGE
+
+Command line options are processed in the order given.  These can either
+be the names of files to read, or options giving other operations to
+perform.  For example to load a file and then display information:
+
+    astmoctool MOC.fits --info
+
+Note: AST performs all MOC operations at a particular "MaxOrder" value.
+This will be determined by the first loaded MOC or can be specified
+via the "--max-order" option.  Cells smaller than this order are ignored.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--info>
+
+Display information about the current MOC.
+
+=item B<--output> FILENAME
+
+Write the current MOC to the given file.
+
+=item B<--intersection> FILENAME
+
+Perform an intersection between the current MOC and the MOC in the given file.
+
+=item B<--subtract> FILENAME
+
+Subtract the MOC in the given file from the current MOC.
+
+=item B<--show>
+
+Display a description of the current AST MOC object.
+
+=item B<--max-order>
+
+Set the maximum order.  This must be done before any MOC is loaded.
+
+=back
+
+=cut
+
 use strict;
 
 use IO::File;
+use Pod::Usage;
 
 use Astro::FITS::CFITSIO;
 use Starlink::AST;
@@ -18,8 +67,6 @@ sub moc_tool {
         $moc = new Starlink::AST::Moc($options);
     };
 
-    # Note: currently all operations are performed at the "MaxOrder" of the
-    # first loaded MOC or specified by --max-order.  Smaller cells are ignored.
 
     my %command = map {my ($opts, $func) = @$_; map {$_ => $func} @$opts} (
         [[qw/--info -i/], sub {
@@ -61,6 +108,9 @@ sub moc_tool {
             die 'Can not set maximum order: a MOC has already been defined'
                 if defined $moc;
             $initialize_moc->(sprintf 'MaxOrder=%i', $max_order);
+        }],
+        [[qw/--help -h/], sub {
+            pod2usage(-vebose => 1, -exitval => 'NOEXIT');
         }],
     );
 
@@ -198,3 +248,23 @@ sub read_moc{
         $moc->AddMocString($mode, $negate, -1, $buff);
     }
 }
+
+__END__
+
+=head1 COPYRIGHT
+
+Copyright (C) 2019-2021 East Asian Observatory
+All Rights Reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
