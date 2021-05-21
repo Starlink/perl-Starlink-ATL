@@ -12,13 +12,18 @@ moc_tool(@ARGV);
 sub moc_tool {
     my @args = @_;
 
-    my $moc = new Starlink::AST::Moc('');
+    my $moc = undef;
+    my $initialize_moc = sub {
+        my $options = shift // '';
+        $moc = new Starlink::AST::Moc($options);
+    };
 
     # Note: currently all operations are performed at the "MaxOrder" of the
-    # first loaded MOC -- smaller cells are ignored.
+    # first loaded MOC or specified by --max-order.  Smaller cells are ignored.
 
     my %command = map {my ($opts, $func) = @$_; map {$_ => $func} @$opts} (
         [[qw/--info -i/], sub {
+            die 'A MOC has not yet been defined' unless defined $moc;
             printf "Max. order: %i (%f\")\n", $moc->GetI('MaxOrder'), $moc->GetD('MaxRes');
             printf "Min. order: %i (%f\")\n", $moc->GetI('MinOrder'), $moc->GetD('MinRes');
             printf "Area: %f sq. deg.\n", $moc->GetD('MocArea') / 3600.0;
@@ -29,17 +34,33 @@ sub moc_tool {
             my $filename = shift @args;
             die 'No output filename specified' unless defined $filename;
             die "Output file '$filename' already exists" if -e $filename;
+            die 'A MOC has not yet been defined' unless defined $moc;
             write_moc($moc, $filename);
         }],
         [[qw/--intersection/], sub {
             my $filename = shift @args;
             die 'No intersection filename specified' unless defined $filename;
+            die 'A MOC has not yet been defined' unless defined $moc;
             read_moc($moc, $filename, Starlink::AST::Region::AST__AND(),  0);
         }],
         [[qw/--subtract/], sub {
             my $filename = shift @args;
             die 'No subtraction filename specified' unless defined $filename;
+            die 'A MOC has not yet been defined' unless defined $moc;
             read_moc($moc, $filename, Starlink::AST::Region::AST__AND(),  1);
+        }],
+        [[qw/--show/], sub {
+            die 'A MOC has not yet been defined' unless defined $moc;
+            $moc->Show();
+        }],
+        [[qw/--max-order/], sub {
+            my $max_order = shift @args;
+            die 'No maximum order specified' unless defined $max_order;
+            die 'Maximum order must be between 0 and 27'
+                if $max_order < 0 or $max_order > 27;
+            die 'Can not set maximum order: a MOC has already been defined'
+                if defined $moc;
+            $initialize_moc->(sprintf 'MaxOrder=%i', $max_order);
         }],
     );
 
@@ -50,6 +71,7 @@ sub moc_tool {
             $command{$arg}->();
         }
         elsif (-e $arg) {
+            $initialize_moc->() unless defined $moc;
             read_moc($moc, $arg, Starlink::AST::Region::AST__OR(),  0);
         }
         else {
