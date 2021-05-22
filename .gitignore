@@ -3,3 +3,5 @@
 /blib
 /*META.*
 /*.tar.gz
+*~
+.*.swp
