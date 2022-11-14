@@ -140,7 +140,17 @@ sub read_moc_fits {
 
 Write a MOC to a FITS file.
 
-    write_moc_fits($moc, $filename);
+    write_moc_fits($moc, $filename, %options);
+
+Options:
+
+=over 4
+
+=item type
+
+MOC type ("IMAGE" or "CATALOG").
+
+=back
 
 =cut
 
@@ -172,6 +182,15 @@ sub write_moc_fits {
         $fptr->write_record($card, $status);
     }
     die 'Error writing MOC headers' if $status;
+
+    if ((exists $opt{'type'}) and (defined $opt{'type'})) {
+        my $type = uc $opt{'type'};
+        die 'MOC type must be IMAGE or CATALOG'
+            unless (($type eq 'IMAGE') or ($type eq 'CATALOG'));
+        $fptr->update_key_str(
+            'MOCTYPE', $type, 'Source type (IMAGE or CATALOG)', $status);
+        die 'Error writing MOCTYPE header' if $status;
+    }
 
     my $type = $moc->GetI('MocType');
     if ($type == 4) {
