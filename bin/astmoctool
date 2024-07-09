@@ -72,7 +72,6 @@ sub moc_tool {
         [[qw/--info -i/], sub {
             die 'A MOC has not yet been defined' unless defined $moc;
             printf "Max. order: %i (%f\")\n", $moc->GetI('MaxOrder'), $moc->GetD('MaxRes');
-            printf "Min. order: %i (%f\")\n", $moc->GetI('MinOrder'), $moc->GetD('MinRes');
             printf "Area: %f sq. deg.\n", $moc->GetD('MocArea') / 3600.0;
             printf "Cells: %i\n", $moc->GetI('MocLength');
             printf "Type: %i-byte\n", $moc->GetI('MocType');
