@@ -64,7 +64,7 @@ sub moc_tool {
     my $moc = undef;
     my $initialize_moc = sub {
         my $options = shift // '';
-        $moc = new Starlink::AST::Moc($options);
+        $moc = Starlink::AST::Moc->new($options);
     };
 
 
@@ -141,7 +141,7 @@ sub write_moc {
     else {
         my $json = $filename =~ /\.json$/i;
 
-        my $fh = new IO::File($filename, 'w');
+        my $fh = IO::File->new($filename, 'w');
         die "Could not open file '$filename' for writing" unless defined $fh;
         print $fh $moc->GetMocString($json ? 1 : 0);
         close $fh;
@@ -156,7 +156,7 @@ sub read_moc {
     }
     else {
         local $/;
-        my $fh = new IO::File($filename);
+        my $fh = IO::File->new($filename);
         die "Could not open file '$filename' for reading" unless defined $fh;
         my $buff = <$fh>;
         close $fh;

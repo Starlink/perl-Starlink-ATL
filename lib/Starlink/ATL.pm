@@ -4,7 +4,7 @@ Starlink::ATL - Utilities for use with Starlink::AST.
 
 =head1 SYNOPSIS
 
-  use Starlink::ATL;
+    use Starlink::ATL;
 
 =head1 DESCRIPTION
 

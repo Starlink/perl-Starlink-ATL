@@ -82,7 +82,7 @@ sub read_moc_fits {
                 if $max_order < 0 or $max_order > 27;
             $options = sprintf 'MaxOrder=%i', $max_order;
         }
-        $moc = new Starlink::AST::Moc($options);
+        $moc = Starlink::AST::Moc->new($options);
     }
 
     # MOC FITS reading routine based on similar code in GAIA.
