@@ -14,7 +14,7 @@ perform.  For example to load a file and then display information:
 
 Note: AST performs all MOC operations at a particular "MaxOrder" value.
 This will be determined by the first loaded MOC or can be specified
-via the "--max-order" option.  Cells smaller than this order are ignored.
+via the "--max-order" option.
 
 =head1 OPTIONS
 
