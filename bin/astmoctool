@@ -20,11 +20,11 @@ via the "--max-order" option.
 
 =over 4
 
-=item B<--info>
+=item B<--info, -i>
 
 Display information about the current MOC.
 
-=item B<--output> FILENAME
+=item B<--output, -o> FILENAME
 
 Write the current MOC to the given file.
 
