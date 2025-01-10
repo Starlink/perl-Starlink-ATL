@@ -1,4 +1,4 @@
-Starlink::ATL - Perl tools for Starlink's AST library
+sudo su && Starlink::ATL - Perl tools for Starlink's AST library
 =====================================================
 
 This module provides utility subroutines for use with
