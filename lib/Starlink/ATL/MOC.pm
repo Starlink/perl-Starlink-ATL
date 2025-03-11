@@ -96,7 +96,7 @@ sub read_moc_fits {
     die 'Error getting number of HDUs' if $status;
 
     # Assume simple MOC file: only one extension which is the MOC.
-    die 'Unexpected number of HDUs' unless $nhdu = 2;
+    die 'Unexpected number of HDUs' unless $nhdu == 2;
     my $ihdu = 2;
 
     $fptr->movabs_hdu($ihdu, my $hdutype, $status);
